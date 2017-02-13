@@ -1,5 +1,8 @@
 package lk.grp.synergy;
 
+import lk.grp.synergy.control.NotificationController;
+
+import java.sql.SQLException;
 import java.util.Properties;
 
 import javax.mail.Message;
@@ -9,11 +12,26 @@ import javax.mail.Session;
 import javax.mail.Transport;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
+import javax.naming.NamingException;
 
 public class SendEmail {
 
     public static void main(String[] args) {
+        System.out.println("Starting...");
 
+        NotificationController notificationController =new NotificationController();
+        try {
+            notificationController.getPendingNotifications();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } catch (NamingException e) {
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private static void sendEmail() {
         final String username = "isurub1992@gmail.com";
         final String password = "d3v@*nix";
 
