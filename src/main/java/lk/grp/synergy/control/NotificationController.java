@@ -20,4 +20,8 @@ public class NotificationController {
     public ArrayList<Notification> getPendingNotifications() throws SQLException, NamingException, ClassNotFoundException {
         return notificationDAO.getPendingNotifications();
     }
+
+    public boolean setSentNotifications(Notification n) throws SQLException, NamingException, ClassNotFoundException {
+        return notificationDAO.setSentNotifications(n);
+    }
 }

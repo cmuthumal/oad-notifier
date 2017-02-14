@@ -24,6 +24,6 @@ public class DBConnection {
     }
 
     public static Connection getConnection() throws ClassNotFoundException, SQLException {
-        return getDBConnection().connection;
+        return DriverManager.getConnection("jdbc:mysql://localhost/oad", "root", "");
     }
 }

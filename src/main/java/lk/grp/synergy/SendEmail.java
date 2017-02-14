@@ -1,8 +1,10 @@
 package lk.grp.synergy;
 
 import lk.grp.synergy.control.NotificationController;
+import lk.grp.synergy.model.Notification;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Properties;
 
 import javax.mail.Message;
@@ -10,6 +12,7 @@ import javax.mail.MessagingException;
 import javax.mail.PasswordAuthentication;
 import javax.mail.Session;
 import javax.mail.Transport;
+import javax.mail.internet.AddressException;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 import javax.naming.NamingException;
@@ -17,18 +20,7 @@ import javax.naming.NamingException;
 public class SendEmail {
 
     public static void main(String[] args) {
-        System.out.println("Starting...");
-
-        NotificationController notificationController =new NotificationController();
-        try {
-            notificationController.getPendingNotifications();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        } catch (NamingException e) {
-            e.printStackTrace();
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        }
+        sendEmail();
     }
 
     private static void sendEmail() {
@@ -48,18 +40,36 @@ public class SendEmail {
                     }
                 });
 
-        try {
-            Message message = new MimeMessage(session);
-            message.setFrom(new InternetAddress("isurub1992@gmail.com"));
-            message.setRecipients(Message.RecipientType.TO,
-                    InternetAddress.parse("2222cm@gmail.com"));
-            message.setSubject("Testing");
-            message.setText("Hi,\nThis is a test e-mail from OUSL-OAD.");
+        NotificationController notificationController = new NotificationController();
+        ArrayList<Notification> notifications;
 
-            Transport.send(message);
-            System.out.println("Sent.");
+        try {
+            notifications = notificationController.getPendingNotifications();
+
+            for (int i = 0; i < notifications.size(); i++) {
+                Notification n = notifications.get(i);
+                Message message = new MimeMessage(session);
+
+                message.setFrom(new InternetAddress("isurub1992@gmail.com"));
+                message.setRecipients(Message.RecipientType.TO,
+                        InternetAddress.parse(n.getTo()));
+                message.setSubject("Activity Update");
+                message.setText(n.getMessage());
+
+                Transport.send(message);
+
+                notificationController.setSentNotifications(n);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } catch (NamingException e) {
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        } catch (AddressException e) {
+            e.printStackTrace();
         } catch (MessagingException e) {
-            throw new RuntimeException(e);
+            e.printStackTrace();
         }
     }
 }

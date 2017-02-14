@@ -37,7 +37,6 @@ public class NotificationDAO {
                     int stdId = resultSet.getInt("student_id");
 
                     notifications.add(new Notification(id, stdId, msg, channel, to, scheduledTime, deliveredTime));
-                    System.out.println(id + ": " + msg);
                 }
             }
         }
@@ -46,17 +45,25 @@ public class NotificationDAO {
     }
 
     public boolean setSentNotifications(Notification n) throws SQLException, NamingException, ClassNotFoundException {
-        n.setDeliveredTime(LocalDateTime.now());
-        String sql = "INSERT INTO notification VALUES (" + n.getNotificationID() + "," + n.getMessage() + ","
-                + n.getChannel() + "," + n.getTo() + "," + n.getScheduledTime() + "," + n.getDeliveredTime() + ","
-                + n.getStudentID() + ")";
+//        Connection connection = DBConnection.getConnection();
+//        Statement stm = connection.createStatement();
+//
+//        String sql = "UPDATE notification SET delivered_time=LocalDateTime.now() WHERE notification_id="
+//                + n.getNotificationID() + ";";
+//        int res = stm.executeUpdate(sql);
+//        return res == 1;
 
+        String sql = "UPDATE notification SET delivered_time=? WHERE notification_id=?;";
+        boolean updated = false;
         try (
                 Connection con = DBConnection.getConnection();
-                PreparedStatement prStmt = con.prepareStatement(sql)
+                PreparedStatement pstm = con.prepareStatement(sql)
         ) {
-            int res = prStmt.executeUpdate(sql);
-            return res == 1;
+            pstm.setTimestamp(1,Timestamp.valueOf(LocalDateTime.now()));
+            pstm.setInt(2,n.getNotificationID());
+
+            updated = pstm.executeUpdate() == 1;
         }
+        return updated;
     }
 }
