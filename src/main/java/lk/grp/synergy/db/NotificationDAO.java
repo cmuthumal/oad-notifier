@@ -45,14 +45,6 @@ public class NotificationDAO {
     }
 
     public boolean setSentNotifications(Notification n) throws SQLException, NamingException, ClassNotFoundException {
-//        Connection connection = DBConnection.getConnection();
-//        Statement stm = connection.createStatement();
-//
-//        String sql = "UPDATE notification SET delivered_time=LocalDateTime.now() WHERE notification_id="
-//                + n.getNotificationID() + ";";
-//        int res = stm.executeUpdate(sql);
-//        return res == 1;
-
         String sql = "UPDATE notification SET delivered_time=? WHERE notification_id=?;";
         boolean updated = false;
         try (

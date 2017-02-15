@@ -20,7 +20,10 @@ import javax.naming.NamingException;
 public class SendEmail {
 
     public static void main(String[] args) {
-        sendEmail();
+
+        while (true){
+            sendEmail();
+        }
     }
 
     private static void sendEmail() {
